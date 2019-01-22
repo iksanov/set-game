@@ -56,8 +56,8 @@ class SetViewController: UIViewController {
         }
     }
     
-    func itemShapeFromEnum(shape: ShapeOfCard) -> String {
-        switch shape {
+    func itemSymbolFromEnum(symbol: SymbolOfCard) -> String {
+        switch symbol {
         case .triangle: return "\u{25B2}"
         case .circle: return "\u{25CF}"
         case .square: return "\u{25A0}"
@@ -65,7 +65,7 @@ class SetViewController: UIViewController {
     }
     
     func titleForCard(_ card: Card) -> String {
-        let stringArray = Array(repeating: itemShapeFromEnum(shape: card.shape), count: card.numberOfItems)
+        let stringArray = Array(repeating: itemSymbolFromEnum(symbol: card.symbol), count: card.numberOfItems)
         return stringArray.joined(separator: "\n")
     }
     

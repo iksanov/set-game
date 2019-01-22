@@ -16,12 +16,12 @@ enum ColorOfCard {
     static var all = [ColorOfCard.red, .green, .purple]
 }
 
-enum ShapeOfCard {
+enum SymbolOfCard {
     case triangle
     case circle
     case square
     
-    static var all = [ShapeOfCard.triangle, .circle, .square]
+    static var all = [SymbolOfCard.triangle, .circle, .square]
 }
 
 enum ShadeOfCard {
@@ -34,13 +34,13 @@ enum ShadeOfCard {
 
 class Card {
     let color: ColorOfCard
-    let shape: ShapeOfCard
+    let symbol: SymbolOfCard
     let shade: ShadeOfCard
     let numberOfItems: Int
     
-    init(color: ColorOfCard, shape: ShapeOfCard, shade: ShadeOfCard, numberOfItems: Int) {
+    init(color: ColorOfCard, symbol: SymbolOfCard, shade: ShadeOfCard, numberOfItems: Int) {
         self.color = color
-        self.shape = shape
+        self.symbol = symbol
         self.shade = shade
         self.numberOfItems = numberOfItems
     }
