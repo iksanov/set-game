@@ -56,7 +56,7 @@ class SetViewController: UIViewController {
         }
     }
     
-    func itemSymbolFromEnum(symbol: SymbolOfCard) -> String {
+    func symbolFromEnum(symbol: SymbolOfCard) -> String {
         switch symbol {
         case .triangle: return "\u{25B2}"
         case .circle: return "\u{25CF}"
@@ -64,8 +64,24 @@ class SetViewController: UIViewController {
         }
     }
     
+    func alphaFromEnum(shade: ShadeOfCard) -> CGFloat {
+        switch shade {
+        case .open: return 1.0
+        case .striped: return 0.25
+        case .solid: return 1.0
+        }
+    }
+    
+    func strokeWidthFromEnum(shade: ShadeOfCard) -> CGFloat {
+        switch shade {
+        case .open: return 5.0
+        case .striped: return 0.0
+        case .solid: return 0.0
+        }
+    }
+    
     func titleForCard(_ card: Card) -> String {
-        let stringArray = Array(repeating: itemSymbolFromEnum(symbol: card.symbol), count: card.numberOfItems)
+        let stringArray = Array(repeating: symbolFromEnum(symbol: card.symbol), count: card.numberOfItems)
         return stringArray.joined(separator: "\n")
     }
     
@@ -74,7 +90,10 @@ class SetViewController: UIViewController {
         var font = UIFont.preferredFont(forTextStyle: .body).withSize(fontSize)
         font = UIFontMetrics(forTextStyle: .body).scaledFont(for: font)
         let color = colorFromEnum(color: card.color)
-        return NSAttributedString(string: titleForCard(card), attributes: [.font : font, .foregroundColor : color])
+        let alpha = alphaFromEnum(shade: card.shade)
+        let colorWithAlpha = color.withAlphaComponent(alpha)
+        let strokeWidth = strokeWidthFromEnum(shade: card.shade)
+        return NSAttributedString(string: titleForCard(card), attributes: [.font : font, .foregroundColor : colorWithAlpha, .strokeWidth : strokeWidth])
     }
     
     func wellSizedTitleString(for card: Card) -> NSAttributedString {
