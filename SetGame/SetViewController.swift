@@ -21,7 +21,64 @@ class SetViewController: UIViewController {
     
     @IBOutlet var cardButtons: [UIButton]!
     
+    func cardByButton(_ button: UIButton) -> Card? {
+        if let cardIndex = cardButtons.firstIndex(of: button) {
+            if let card = game.cardsOnTheTable.first(where: {$0.buttonIndex == cardIndex}) {
+                return card
+            } else {
+                return nil
+            }
+        } else {assert(false)}
+    }
+    
+    func removeSelectedCardsFromTable() {
+        for card in game.selectedCards {
+            if let index = game.cardsOnTheTable.firstIndex(of: card) {
+                game.cardsOnTheTable.remove(at: index)
+            } else {assert(false)}
+        }
+    }
+    
+    func removeCardFromSelected(_ card: Card) {
+        if let index = game.selectedCards.firstIndex(of: card) {
+            game.selectedCards.remove(at: index)
+        }
+    }
+    
+    func addCardsOnTableFromDeck() {
+        for card in game.selectedCards {
+            let newCard = game.deckOfCards.removeLast()
+            newCard.buttonIndex = card.buttonIndex
+            game.cardsOnTheTable.append(newCard)
+        }
+    }
+    
     @IBAction func touchCard(_ sender: UIButton) {
+        if let card = cardByButton(sender) {
+            if game.selectedCards.count == 3 {
+                if game.successfulMatch {
+                    removeSelectedCardsFromTable()
+                    if !game.deckOfCards.isEmpty {
+                        addCardsOnTableFromDeck()
+                    }
+                    let touchedCardIsSelected = game.selectedCards.contains(card)
+                    game.selectedCards.removeAll()
+                    if !touchedCardIsSelected {
+                        game.selectedCards.append(card)
+                    }
+                } else {
+                    game.selectedCards.removeAll()
+                    game.selectedCards.append(card)
+                }
+            } else {
+                if game.selectedCards.contains(card) {
+                    removeCardFromSelected(card)
+                } else {
+                    game.selectedCards.append(card)
+                }
+            }
+            updateViewFromModel()
+        } else {print("Touched card is not on the table.")}
     }
     
     @IBOutlet weak var dealCardsButton: UIButton!
@@ -110,8 +167,9 @@ class SetViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        for index in cardButtons.indices {
-            cardButtons[index].titleLabel?.lineBreakMode = NSLineBreakMode.byWordWrapping
+        for button in cardButtons {
+            button.titleLabel?.lineBreakMode = NSLineBreakMode.byWordWrapping
+            button.layer.cornerRadius = 8.0
         }
         dealCardsButton.titleLabel?.textAlignment = NSTextAlignment.center
         dealCardsButton.setTitle("Deal 3\nMore Cards", for: UIControl.State.normal)
@@ -120,15 +178,30 @@ class SetViewController: UIViewController {
     }
     
     func updateViewFromModel() {
-        for index in cardButtons.indices {
-            cardButtons[index].backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
-            cardButtons[index].setAttributedTitle(NSAttributedString(string: ""), for: UIControl.State.normal)
-            cardButtons[index].setTitle("", for: UIControl.State.normal)
+        for button in cardButtons {
+            button.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
+            button.setAttributedTitle(NSAttributedString(string: ""), for: UIControl.State.normal)
+            button.setTitle("", for: UIControl.State.normal)
+            button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
         }
-        for index in game.cardsOnTheTable.indices {
-            cardButtons[index].backgroundColor = #colorLiteral(red: 1, green: 0.8, blue: 0.6, alpha: 1)
-            let buttonTitleString = wellSizedTitleString(for: game.cardsOnTheTable[index])
-            cardButtons[index].setAttributedTitle(buttonTitleString, for: UIControl.State.normal)
+        for card in game.cardsOnTheTable {
+            cardButtons[card.buttonIndex].backgroundColor = #colorLiteral(red: 1, green: 0.8, blue: 0.6, alpha: 1)
+            let buttonTitleString = wellSizedTitleString(for: card)
+            cardButtons[card.buttonIndex].setAttributedTitle(buttonTitleString, for: UIControl.State.normal)
+            if game.selectedCards.contains(card) {
+                cardButtons[card.buttonIndex].layer.borderWidth = 3.0
+                cardButtons[card.buttonIndex].layer.borderColor = #colorLiteral(red: 0, green: 0.5446566343, blue: 0.9828409553, alpha: 1)
+            }
+        }
+        if game.selectedCards.count == 3 {
+            for card in game.selectedCards {
+                cardButtons[card.buttonIndex].layer.borderWidth = 3.0
+                if game.successfulMatch {
+                    cardButtons[card.buttonIndex].layer.borderColor = #colorLiteral(red: 0.1898198426, green: 0.9772902131, blue: 0, alpha: 1)
+                } else {
+                    cardButtons[card.buttonIndex].layer.borderColor = #colorLiteral(red: 0.846742928, green: 0.1176741496, blue: 0, alpha: 1)
+                }
+            }
         }
     }
 }

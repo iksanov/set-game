@@ -16,7 +16,8 @@ extension Array {
 }
 
 struct SetGame {
-    private(set) var deckOfCards = [Card]()
+    var buttonIndices = Set(0..<24)
+    var deckOfCards = [Card]()
     var cardsOnTheTable = [Card]()
     var selectedCards = [Card]()
     
@@ -45,8 +46,10 @@ struct SetGame {
             let cond4 = ifColorsEqualIn(card1, card2, card3)
             return cond1 && cond2 && cond3 && cond4
         } else {
-            return false
+            assert(false)  // we can check successful match only for 3 selected cards
+            print("The number of selected cards is != 3")
         }
+//         return true
     }
     
     init() {
@@ -62,7 +65,9 @@ struct SetGame {
         }
         deckOfCards.shuffle()
         for _ in 1...12 {
-            cardsOnTheTable.append(deckOfCards.removeLast())
+            let card = deckOfCards.removeLast()
+            card.buttonIndex = buttonIndices.removeFirst()
+            cardsOnTheTable.append(card)
         }
     }
 }

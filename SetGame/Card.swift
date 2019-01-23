@@ -32,11 +32,16 @@ enum ShadeOfCard {
     static var all = [ShadeOfCard.open, .striped, .solid]
 }
 
-class Card {
+class Card: Equatable {
+    static func == (lhs: Card, rhs: Card) -> Bool {
+        return (lhs.color == rhs.color) && (lhs.symbol == rhs.symbol) && (lhs.shade == rhs.shade) && (lhs.numberOfItems == rhs.numberOfItems)
+    }
+    
     let color: ColorOfCard
     let symbol: SymbolOfCard
     let shade: ShadeOfCard
     let numberOfItems: Int
+    var buttonIndex: Int = -1
     
     init(color: ColorOfCard, symbol: SymbolOfCard, shade: ShadeOfCard, numberOfItems: Int) {
         self.color = color
