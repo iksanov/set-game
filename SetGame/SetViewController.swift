@@ -19,6 +19,13 @@ class SetViewController: UIViewController {
     
     var game = SetGame()
     
+    var dealCardsButtonIsDisabled: Bool {
+        get {
+            return game.deckOfCards.isEmpty || (game.buttonIndices.isEmpty && !(game.selectedCards.count == 3 && game.successfulMatch))
+//            return true
+        }
+    }
+    
     @IBOutlet var cardButtons: [UIButton]!
     
     func cardByButton(_ button: UIButton) -> Card? {
@@ -84,6 +91,20 @@ class SetViewController: UIViewController {
     @IBOutlet weak var dealCardsButton: UIButton!
     
     @IBAction func DealThreeMoreCards(_ sender: UIButton) {
+        if !dealCardsButtonIsDisabled {
+            if game.selectedCards.count == 3 && game.successfulMatch {
+                removeSelectedCardsFromTable()
+                addCardsOnTableFromDeck()
+                game.selectedCards.removeAll()
+            } else {
+                for _ in 1...3 {
+                    let newCard = game.deckOfCards.removeLast()
+                    newCard.buttonIndex = game.buttonIndices.removeFirst()
+                    game.cardsOnTheTable.append(newCard)
+                }
+            }
+            updateViewFromModel()
+        } else {assert(false, "dealCardsButton should be disabled")}
     }
     
     @IBAction func startNewGame(_ sender: UIButton) {
@@ -202,6 +223,13 @@ class SetViewController: UIViewController {
                     cardButtons[card.buttonIndex].layer.borderColor = #colorLiteral(red: 0.846742928, green: 0.1176741496, blue: 0, alpha: 1)
                 }
             }
+        }
+        if dealCardsButtonIsDisabled {
+            dealCardsButton.backgroundColor = #colorLiteral(red: 0.3272040486, green: 0.4194450378, blue: 0.8449910283, alpha: 1).withAlphaComponent(0.15)
+            dealCardsButton.isEnabled = false
+        } else {
+            dealCardsButton.backgroundColor = #colorLiteral(red: 0.3272040486, green: 0.4194450378, blue: 0.8449910283, alpha: 1)
+            dealCardsButton.isEnabled = true
         }
     }
 }

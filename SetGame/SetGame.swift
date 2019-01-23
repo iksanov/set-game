@@ -37,13 +37,29 @@ struct SetGame {
         return (card1.color == card2.color) && (card2.color == card3.color)
     }
     
+    func ifNumbersAllDifferentIn(_ card1: Card, _ card2: Card, _ card3: Card) -> Bool {
+        return (card1.numberOfItems != card2.numberOfItems) && (card1.numberOfItems != card3.numberOfItems) && (card2.numberOfItems != card3.numberOfItems)
+    }
+    
+    func ifSymbolsAllDifferentIn(_ card1: Card, _ card2: Card, _ card3: Card) -> Bool {
+        return (card1.symbol != card2.symbol) && (card1.symbol != card3.symbol) && (card2.symbol != card3.symbol)
+    }
+    
+    func ifShadesAllDifferentIn(_ card1: Card, _ card2: Card, _ card3: Card) -> Bool {
+        return (card1.shade != card2.shade) && (card1.shade != card3.shade) && (card2.shade != card3.shade)
+    }
+    
+    func ifColorsAllDifferentIn(_ card1: Card, _ card2: Card, _ card3: Card) -> Bool {
+        return (card1.color != card2.color) && (card1.color != card3.color) && (card2.color != card3.color)
+    }
+    
     var successfulMatch: Bool {
         if selectedCards.count == 3 {
             let (card1, card2, card3) = selectedCards.getFirstThree()
-            let cond1 = ifNumbersEqualIn(card1, card2, card3)
-            let cond2 = ifSymbolsEqualIn(card1, card2, card3)
-            let cond3 = ifShadesEqualIn(card1, card2, card3)
-            let cond4 = ifColorsEqualIn(card1, card2, card3)
+            let cond1 = ifNumbersEqualIn(card1, card2, card3) || ifNumbersAllDifferentIn(card1, card2, card3)
+            let cond2 = ifSymbolsEqualIn(card1, card2, card3) || ifSymbolsAllDifferentIn(card1, card2, card3)
+            let cond3 = ifShadesEqualIn(card1, card2, card3) || ifShadesAllDifferentIn(card1, card2, card3)
+            let cond4 = ifColorsEqualIn(card1, card2, card3) || ifColorsAllDifferentIn(card1, card2, card3)
             return cond1 && cond2 && cond3 && cond4
         } else {
             assert(false)  // we can check successful match only for 3 selected cards
