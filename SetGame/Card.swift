@@ -13,7 +13,7 @@ enum ColorOfCard {
     case green
     case purple
     
-    static var all = [ColorOfCard.red, .green, .purple]
+    private(set) static var all = [ColorOfCard.red, .green, .purple]
 }
 
 enum SymbolOfCard {
@@ -21,7 +21,7 @@ enum SymbolOfCard {
     case circle
     case square
     
-    static var all = [SymbolOfCard.triangle, .circle, .square]
+    private(set) static var all = [SymbolOfCard.triangle, .circle, .square]
 }
 
 enum ShadeOfCard {
@@ -29,7 +29,7 @@ enum ShadeOfCard {
     case striped
     case solid
     
-    static var all = [ShadeOfCard.open, .striped, .solid]
+    private(set) static var all = [ShadeOfCard.open, .striped, .solid]
 }
 
 class Card: Equatable {

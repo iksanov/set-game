@@ -17,17 +17,17 @@ class SetViewController: UIViewController {
         updateViewFromModel()
     }
     
-    var game = SetGame()
+    private var game = SetGame()
     
-    var dealCardsButtonIsDisabled: Bool {
+    private var dealCardsButtonIsDisabled: Bool {
         get {
             return game.deckOfCards.isEmpty || (game.buttonIndices.isEmpty && !(game.selectedCards.count == 3 && game.successfulMatch))
         }
     }
     
-    @IBOutlet var cardButtons: [UIButton]!
+    @IBOutlet private var cardButtons: [UIButton]!
     
-    func cardByButton(_ button: UIButton) -> Card? {
+    private func cardByButton(_ button: UIButton) -> Card? {
         if let cardIndex = cardButtons.firstIndex(of: button) {
             if let card = game.cardsOnTheTable.first(where: {$0.buttonIndex == cardIndex}) {
                 return card
@@ -37,7 +37,7 @@ class SetViewController: UIViewController {
         } else {assert(false)}
     }
     
-    func removeSelectedCardsFromTable() {
+    private func removeSelectedCardsFromTable() {
         for card in game.selectedCards {
             if let index = game.cardsOnTheTable.firstIndex(of: card) {
                 game.cardsOnTheTable.remove(at: index)
@@ -45,13 +45,13 @@ class SetViewController: UIViewController {
         }
     }
     
-    func removeCardFromSelected(_ card: Card) {
+    private func removeCardFromSelected(_ card: Card) {
         if let index = game.selectedCards.firstIndex(of: card) {
             game.selectedCards.remove(at: index)
         }
     }
     
-    func addCardsOnTableFromDeck() {
+    private func addCardsOnTableFromDeck() {
         for card in game.selectedCards {
             let newCard = game.deckOfCards.removeLast()
             newCard.buttonIndex = card.buttonIndex
@@ -59,7 +59,7 @@ class SetViewController: UIViewController {
         }
     }
     
-    @IBAction func touchCard(_ sender: UIButton) {
+    @IBAction private func touchCard(_ sender: UIButton) {
         if let card = cardByButton(sender) {
             if game.selectedCards.count == 3 {
                 if game.successfulMatch {
@@ -90,9 +90,9 @@ class SetViewController: UIViewController {
         } else {print("Touched card is not on the table.")}
     }
     
-    @IBOutlet weak var dealCardsButton: UIButton!
+    @IBOutlet private weak var dealCardsButton: UIButton!
     
-    @IBAction func DealThreeMoreCards(_ sender: UIButton) {
+    @IBAction private func DealThreeMoreCards(_ sender: UIButton) {
         if !dealCardsButtonIsDisabled {
             if game.selectedCards.count == 3 && game.successfulMatch {
                 game.scoreCounter += 3
@@ -110,14 +110,14 @@ class SetViewController: UIViewController {
         } else {assert(false, "dealCardsButton should be disabled")}
     }
     
-    @IBOutlet weak var newGameButton: UIButton!
+    @IBOutlet private weak var newGameButton: UIButton!
     
-    @IBAction func startNewGame(_ sender: UIButton) {
+    @IBAction private func startNewGame(_ sender: UIButton) {
         game = SetGame()
         updateViewFromModel()
     }
     
-    func updateScoreLabel() {
+    private func updateScoreLabel() {
         let attributesForScoreCountLabel: [NSAttributedString.Key : Any] = [
             .foregroundColor: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         ]
@@ -125,9 +125,9 @@ class SetViewController: UIViewController {
         scoreLabel.attributedText = attributedStringForScoreLabel
     }
     
-    @IBOutlet weak var scoreLabel: UILabel!
+    @IBOutlet private weak var scoreLabel: UILabel!
     
-    func changeCardAspectRatio() {
+    private func changeCardAspectRatio() {
         for card in cardButtons {
             let cardAspectRatioConstraint = NSLayoutConstraint(
                 item: card,
@@ -141,7 +141,7 @@ class SetViewController: UIViewController {
         }
     }
     
-    func colorFromEnum(color: ColorOfCard) -> UIColor {
+    private func colorFromEnum(color: ColorOfCard) -> UIColor {
         switch color {
         case .green: return #colorLiteral(red: 0, green: 0.6498066187, blue: 0.2595749497, alpha: 1)
         case .purple: return #colorLiteral(red: 0.6721233726, green: 0.1548318267, blue: 0.6646618247, alpha: 1)
@@ -149,7 +149,7 @@ class SetViewController: UIViewController {
         }
     }
     
-    func symbolFromEnum(symbol: SymbolOfCard) -> String {
+    private func symbolFromEnum(symbol: SymbolOfCard) -> String {
         switch symbol {
         case .triangle: return "\u{25B2}"
         case .circle: return "\u{25CF}"
@@ -157,7 +157,7 @@ class SetViewController: UIViewController {
         }
     }
     
-    func alphaFromEnum(shade: ShadeOfCard) -> CGFloat {
+    private func alphaFromEnum(shade: ShadeOfCard) -> CGFloat {
         switch shade {
         case .open: return 1.0
         case .striped: return 0.25
@@ -165,7 +165,7 @@ class SetViewController: UIViewController {
         }
     }
     
-    func strokeWidthFromEnum(shade: ShadeOfCard) -> CGFloat {
+    private func strokeWidthFromEnum(shade: ShadeOfCard) -> CGFloat {
         switch shade {
         case .open: return 5.0
         case .striped: return 0.0
@@ -173,12 +173,12 @@ class SetViewController: UIViewController {
         }
     }
     
-    func titleForCard(_ card: Card) -> String {
+    private func titleForCard(_ card: Card) -> String {
         let stringArray = Array(repeating: symbolFromEnum(symbol: card.symbol), count: card.numberOfItems)
         return stringArray.joined(separator: "\n")
     }
     
-    func createAttributedString(for card: Card, withFontSize fontSize: CGFloat) -> NSAttributedString {
+    private func createAttributedString(for card: Card, withFontSize fontSize: CGFloat) -> NSAttributedString {
         UIFont.preferredFont(forTextStyle: .body).withSize(fontSize)
         var font = UIFont.preferredFont(forTextStyle: .body).withSize(fontSize)
         font = UIFontMetrics(forTextStyle: .body).scaledFont(for: font)
@@ -189,7 +189,7 @@ class SetViewController: UIViewController {
         return NSAttributedString(string: titleForCard(card), attributes: [.font : font, .foregroundColor : colorWithAlpha, .strokeWidth : strokeWidth])
     }
     
-    func wellSizedTitleString(for card: Card) -> NSAttributedString {
+    private func wellSizedTitleString(for card: Card) -> NSAttributedString {
         let verticalRowSpacing = CGFloat(cardButtons[0].bounds.size.height / 3.0)
         let attemptedTitleString = createAttributedString(for: card, withFontSize: verticalRowSpacing)
         let probablyOkayTitleStringFontSize = verticalRowSpacing / ((attemptedTitleString.size().height / CGFloat(card.numberOfItems)) / verticalRowSpacing)
@@ -218,7 +218,7 @@ class SetViewController: UIViewController {
         updateViewFromModel()
     }
     
-    func updateViewFromModel() {
+    private func updateViewFromModel() {
         for button in cardButtons {
             button.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
             button.setAttributedTitle(NSAttributedString(string: ""), for: UIControl.State.normal)
