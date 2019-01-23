@@ -331,7 +331,7 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Score: 21" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hFi-lP-XaW">
                                 <rect key="frame" x="135.5" y="615.5" width="104.5" height="31.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="26"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -358,6 +358,7 @@
                     </view>
                     <connections>
                         <outlet property="dealCardsButton" destination="J4M-Pr-JPW" id="A7i-8i-3UU"/>
+                        <outlet property="newGameButton" destination="ku2-kD-Hb0" id="CSP-gA-h2J"/>
                         <outlet property="scoreLabel" destination="hFi-lP-XaW" id="HgD-qV-yhn"/>
                         <outletCollection property="cardButtons" destination="W29-Ne-YHQ" collectionClass="NSMutableArray" id="wIA-Nm-HAq"/>
                         <outletCollection property="cardButtons" destination="2Kk-sP-b2Q" collectionClass="NSMutableArray" id="LCp-W2-ean"/>

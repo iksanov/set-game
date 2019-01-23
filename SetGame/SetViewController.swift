@@ -22,7 +22,6 @@ class SetViewController: UIViewController {
     var dealCardsButtonIsDisabled: Bool {
         get {
             return game.deckOfCards.isEmpty || (game.buttonIndices.isEmpty && !(game.selectedCards.count == 3 && game.successfulMatch))
-//            return true
         }
     }
     
@@ -64,6 +63,7 @@ class SetViewController: UIViewController {
         if let card = cardByButton(sender) {
             if game.selectedCards.count == 3 {
                 if game.successfulMatch {
+                    game.scoreCounter += 3
                     removeSelectedCardsFromTable()
                     if !game.deckOfCards.isEmpty {
                         addCardsOnTableFromDeck()
@@ -74,11 +74,13 @@ class SetViewController: UIViewController {
                         game.selectedCards.append(card)
                     }
                 } else {
+                    game.scoreCounter -= 5
                     game.selectedCards.removeAll()
                     game.selectedCards.append(card)
                 }
             } else {
                 if game.selectedCards.contains(card) {
+                    game.scoreCounter -= 1
                     removeCardFromSelected(card)
                 } else {
                     game.selectedCards.append(card)
@@ -93,6 +95,7 @@ class SetViewController: UIViewController {
     @IBAction func DealThreeMoreCards(_ sender: UIButton) {
         if !dealCardsButtonIsDisabled {
             if game.selectedCards.count == 3 && game.successfulMatch {
+                game.scoreCounter += 3
                 removeSelectedCardsFromTable()
                 addCardsOnTableFromDeck()
                 game.selectedCards.removeAll()
@@ -107,7 +110,19 @@ class SetViewController: UIViewController {
         } else {assert(false, "dealCardsButton should be disabled")}
     }
     
+    @IBOutlet weak var newGameButton: UIButton!
+    
     @IBAction func startNewGame(_ sender: UIButton) {
+        game = SetGame()
+        updateViewFromModel()
+    }
+    
+    func updateScoreLabel() {
+        let attributesForScoreCountLabel: [NSAttributedString.Key : Any] = [
+            .foregroundColor: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        ]
+        let attributedStringForScoreLabel = NSAttributedString(string: "Score: \(game.scoreCounter)", attributes: attributesForScoreCountLabel)
+        scoreLabel.attributedText = attributedStringForScoreLabel
     }
     
     @IBOutlet weak var scoreLabel: UILabel!
@@ -192,9 +207,14 @@ class SetViewController: UIViewController {
             button.titleLabel?.lineBreakMode = NSLineBreakMode.byWordWrapping
             button.layer.cornerRadius = 8.0
         }
+        
+        dealCardsButton.layer.cornerRadius = 3.2
+        newGameButton.layer.cornerRadius = 3.2
+        
         dealCardsButton.titleLabel?.textAlignment = NSTextAlignment.center
         dealCardsButton.setTitle("Deal 3\nMore Cards", for: UIControl.State.normal)
         dealCardsButton.titleLabel?.numberOfLines = 2
+        
         updateViewFromModel()
     }
     
@@ -231,5 +251,6 @@ class SetViewController: UIViewController {
             dealCardsButton.backgroundColor = #colorLiteral(red: 0.3272040486, green: 0.4194450378, blue: 0.8449910283, alpha: 1)
             dealCardsButton.isEnabled = true
         }
+        updateScoreLabel()
     }
 }

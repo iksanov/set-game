@@ -16,10 +16,12 @@ extension Array {
 }
 
 struct SetGame {
-    var buttonIndices = Set(0..<24)
-    var deckOfCards = [Card]()
-    var cardsOnTheTable = [Card]()
-    var selectedCards = [Card]()
+    var buttonIndices: Set<Int>
+    var deckOfCards: [Card]
+    var cardsOnTheTable: [Card]
+    var selectedCards: [Card]
+    
+    var scoreCounter: Int
     
     func ifNumbersEqualIn(_ card1: Card, _ card2: Card, _ card3: Card) -> Bool {
         return (card1.numberOfItems == card2.numberOfItems) && (card2.numberOfItems == card3.numberOfItems)
@@ -54,21 +56,27 @@ struct SetGame {
     }
     
     var successfulMatch: Bool {
-        if selectedCards.count == 3 {
-            let (card1, card2, card3) = selectedCards.getFirstThree()
-            let cond1 = ifNumbersEqualIn(card1, card2, card3) || ifNumbersAllDifferentIn(card1, card2, card3)
-            let cond2 = ifSymbolsEqualIn(card1, card2, card3) || ifSymbolsAllDifferentIn(card1, card2, card3)
-            let cond3 = ifShadesEqualIn(card1, card2, card3) || ifShadesAllDifferentIn(card1, card2, card3)
-            let cond4 = ifColorsEqualIn(card1, card2, card3) || ifColorsAllDifferentIn(card1, card2, card3)
-            return cond1 && cond2 && cond3 && cond4
-        } else {
-            assert(false)  // we can check successful match only for 3 selected cards
-            print("The number of selected cards is != 3")
-        }
-//         return true
+//        if selectedCards.count == 3 {
+//            let (card1, card2, card3) = selectedCards.getFirstThree()
+//            let cond1 = ifNumbersEqualIn(card1, card2, card3) || ifNumbersAllDifferentIn(card1, card2, card3)
+//            let cond2 = ifSymbolsEqualIn(card1, card2, card3) || ifSymbolsAllDifferentIn(card1, card2, card3)
+//            let cond3 = ifShadesEqualIn(card1, card2, card3) || ifShadesAllDifferentIn(card1, card2, card3)
+//            let cond4 = ifColorsEqualIn(card1, card2, card3) || ifColorsAllDifferentIn(card1, card2, card3)
+//            return cond1 && cond2 && cond3 && cond4
+//        } else {
+//            assert(false)  // we can check successful match only for 3 selected cards
+//            print("The number of selected cards is != 3")
+//        }
+         return true
     }
     
     init() {
+        buttonIndices = Set(0..<24)
+        deckOfCards = [Card]()
+        cardsOnTheTable = [Card]()
+        selectedCards = [Card]()
+        scoreCounter = 0
+        
         for color in ColorOfCard.all {
             for symbol in SymbolOfCard.all {
                 for shade in ShadeOfCard.all {
