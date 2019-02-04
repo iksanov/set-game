@@ -54,6 +54,9 @@ class PlaygroundView: UIView {
                 let newCard = SetCardView()
                 let shortenFrame = newCardFrame.zoom(by: SizeRatio.cardWithInsetZoomedBy)
                 newCard.frame = shortenFrame
+                let tap = UITapGestureRecognizer(target: self, action: #selector(foo(arg:)))
+                newCard.addGestureRecognizer(tap)
+                
                 addSubview(newCard)
             }
         }

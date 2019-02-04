@@ -17,11 +17,11 @@ enum ColorOfCard {
 }
 
 enum SymbolOfCard {
-    case triangle
-    case circle
-    case square
+    case squiggle
+    case oval
+    case diamond
     
-    private(set) static var all = [SymbolOfCard.triangle, .circle, .square]
+    private(set) static var all = [SymbolOfCard.squiggle, .oval, .diamond]
 }
 
 enum ShadeOfCard {
