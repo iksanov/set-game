@@ -13,7 +13,7 @@ class SetCardView: UIView {
     
     var color: ColorOfCard = ColorOfCard.red
     var symbol: SymbolOfCard = SymbolOfCard.squiggle
-    var shade: ShadeOfCard = ShadeOfCard.solid
+    var shade: ShadeOfCard = ShadeOfCard.open
     var numberOfItems: Int = 3
     
     private func colorFromEnum(color: ColorOfCard) -> UIColor {
@@ -98,14 +98,14 @@ class SetCardView: UIView {
                           controlPoint1: CGPoint(x: rect.origin.x + rect.size.width * cp1WidthConst, y: rect.origin.y + rect.size.height * cp1HeightConst),
                           controlPoint2: CGPoint(x: rect.origin.x + rect.size.width * cp2WidthConst, y: rect.origin.y + rect.size.height * cp2HeightConst))
         }
-        path.move(to: CGPoint(x: rect.origin.x + rect.size.width*0.05, y: rect.origin.y + rect.size.height*0.40))
-        addCurveToPathWithOffsetConsts(destWidthConst: 0.35, destHeightConst: 0.25, cp1WidthConst: 0.09, cp1HeightConst: 0.15, cp2WidthConst: 0.18, cp2HeightConst: 0.10)
+        
+        path.move(to: CGPoint(x: rect.origin.x + rect.size.width * 0.05, y: rect.origin.y + rect.size.height * 0.40))
+        addCurveToPathWithOffsetConsts(destWidthConst: 0.35, destHeightConst: 0.25, cp1WidthConst: 0.1, cp1HeightConst: 0.2, cp2WidthConst: 0.18, cp2HeightConst: 0.10)
         addCurveToPathWithOffsetConsts(destWidthConst: 0.75, destHeightConst: 0.30, cp1WidthConst: 0.40, cp1HeightConst: 0.30, cp2WidthConst: 0.60, cp2HeightConst: 0.45)
         addCurveToPathWithOffsetConsts(destWidthConst: 0.97, destHeightConst: 0.35, cp1WidthConst: 0.87, cp1HeightConst: 0.15, cp2WidthConst: 0.98, cp2HeightConst: 0.00)
         addCurveToPathWithOffsetConsts(destWidthConst: 0.45, destHeightConst: 0.85, cp1WidthConst: 0.95, cp1HeightConst: 1.10, cp2WidthConst: 0.50, cp2HeightConst: 0.95)
         addCurveToPathWithOffsetConsts(destWidthConst: 0.25, destHeightConst: 0.85, cp1WidthConst: 0.40, cp1HeightConst: 0.80, cp2WidthConst: 0.35, cp2HeightConst: 0.75)
-        addCurveToPathWithOffsetConsts(destWidthConst: 0.05, destHeightConst: 0.40, cp1WidthConst: 0.00, cp1HeightConst: 1.10, cp2WidthConst: 0.005, cp2HeightConst: 0.60)
-        path.close()
+        addCurveToPathWithOffsetConsts(destWidthConst: 0.05, destHeightConst: 0.40, cp1WidthConst: -0.10, cp1HeightConst: 1.25, cp2WidthConst: 0.00, cp2HeightConst: 0.60)
         return path
     }
     
