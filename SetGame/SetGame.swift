@@ -62,6 +62,19 @@ struct SetGame {
         }
     }
     
+    mutating func addThreeCards() {
+        if selectedCards.count == 3 && successfulMatch {
+            scoreCounter += 3
+            replaceSelectedCardsOnTableFromDeck()
+            deselectAllCards()
+        } else {
+            for _ in 1...3 {
+                let newCard = deckOfCards.removeLast()
+                cardsOnTheTable.append(newCard)
+            }
+        }
+    }
+    
     mutating func cardWasTouched(_ touchedCard: Card) {
         if selectedCards.count == 3 {
             if successfulMatch {
