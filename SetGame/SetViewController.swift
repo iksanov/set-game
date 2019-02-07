@@ -17,16 +17,39 @@ class SetViewController: UIViewController {
         updateViewFromModel()
     }
     
-    @IBOutlet weak var playgroundView: PlaygroundView!
+    @IBOutlet weak var playgroundView: PlaygroundView! {
+        didSet {
+            let rotate = UIRotationGestureRecognizer(target: self, action: #selector(shuffleCards(recognizer:)))
+            playgroundView.addGestureRecognizer(rotate)
+        }
+    }
 
     private var game = SetGame()
     
-    @objc func touchCardBy(recognizer: UITapGestureRecognizer) {
-        guard let tappedView = recognizer.view else { assert(false) }
-        guard let indexOftouchedCard = playgroundView.subviews.firstIndex(of: tappedView) else { assert(false) }
-        let touchedCard = game.cardsOnTheTable[indexOftouchedCard]
-        game.cardWasTouched(touchedCard)
-        updateViewFromModel()
+    @objc func shuffleCards(recognizer: UIRotationGestureRecognizer) {
+        switch recognizer.state {
+            case .ended:
+                game.reshuffle()
+                updateViewFromModel()
+            default: break
+        }
+        
+    }
+    
+    @objc private func touchCardBy(recognizer: UITapGestureRecognizer) {
+        print(recognizer.numberOfTouches)
+        switch recognizer.state {
+        case .ended:
+            print("ENDED")
+            guard let tappedView = recognizer.view else { assert(false) }
+            guard let indexOftouchedCard = playgroundView.subviews.firstIndex(of: tappedView) else { return }
+            let touchedCard = game.cardsOnTheTable[indexOftouchedCard]
+            game.cardWasTouched(touchedCard)
+            updateViewFromModel()
+        case .changed:
+            print("CHANGED")
+        default: break
+        }
     }
     
     private func updateViewFromModel() {
@@ -92,11 +115,11 @@ class SetViewController: UIViewController {
     
     @IBOutlet private weak var dealCardsButton: UIButton!
     
-    @IBAction private func DealThreeMoreCards(_ sender: UIButton) {
+    @IBAction func dealThreeMoreCards(_ sender: Any) {
         if !dealCardsButtonIsDisabled {
             game.addThreeCards()
             updateViewFromModel()
-        } else {assert(false, "dealCardsButton should be disabled")}
+        }
     }
     
     @IBOutlet private weak var newGameButton: UIButton!

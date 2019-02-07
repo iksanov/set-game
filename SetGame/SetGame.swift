@@ -75,6 +75,10 @@ struct SetGame {
         }
     }
     
+    mutating func reshuffle() {
+        cardsOnTheTable.shuffle()
+    }
+    
     mutating func cardWasTouched(_ touchedCard: Card) {
         if selectedCards.count == 3 {
             if successfulMatch {
