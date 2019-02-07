@@ -10,34 +10,24 @@ import UIKit
 
 class SetViewController: UIViewController {
     
-    @objc func foo(arg: UITapGestureRecognizer) {
-        if let viewThatWasTapped = arg.view {
-            if let tappedIndex = playgroundView.subviews.firstIndex(of: viewThatWasTapped) {
-                print(tappedIndex)
-            } else {
-                print("error in getting index of view in subviews array")
-            }
-        } else {
-            print("error in accessing the tapped view itsekf")
-        }
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {  // TODO: remove this block
+//        everything works without the following line
+//        super.traitCollectionDidChange(previousTraitCollection)
+        view.layoutIfNeeded()  // TODO: try to remove
+        updateViewFromModel()
     }
-
     
-//    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-////        everything works without the following line
-////        super.traitCollectionDidChange(previousTraitCollection)
-//        view.layoutIfNeeded()
-//        updateViewFromModel()
-//    }
-    
-    @IBOutlet weak var playgroundView: PlaygroundView! {
-        didSet {
-            print("PLAYGROUNDVIEW_DIDSET")
-            updateViewFromModel()
-        }
-    }
+    @IBOutlet weak var playgroundView: PlaygroundView!
 
     private var game = SetGame()
+    
+    @objc func touchCardBy(recognizer: UITapGestureRecognizer) {
+        guard let tappedView = recognizer.view else { assert(false) }
+        guard let indexOftouchedCard = playgroundView.subviews.firstIndex(of: tappedView) else { assert(false) }
+        let touchedCard = game.cardsOnTheTable[indexOftouchedCard]
+        game.cardWasTouched(touchedCard)
+        updateViewFromModel()
+    }
     
     private func updateViewFromModel() {
         playgroundView.numberOfCardsOnTheTable = game.cardsOnTheTable.count
@@ -60,7 +50,7 @@ class SetViewController: UIViewController {
                 newCardView.selected = true
             }
             
-            let tap = UITapGestureRecognizer(target: self, action: #selector(foo(arg:)))
+            let tap = UITapGestureRecognizer(target: self, action: #selector(touchCardBy(recognizer:)))
             newCardView.addGestureRecognizer(tap)
             
             playgroundView.addSubview(newCardView)
@@ -73,21 +63,25 @@ class SetViewController: UIViewController {
                 if game.successfulMatch {
                     viewOfSelectedCard.successful = true
                 } else {
-                    viewOfSelectedCard.successful = false
+                    viewOfSelectedCard.unsuccessful = true
                 }
             }
         }
         
-        playgroundView.layoutIfNeeded()
+        playgroundView.layoutIfNeeded()  // TODO: try to remove
         
-                if dealCardsButtonIsDisabled {
-                    dealCardsButton.backgroundColor = #colorLiteral(red: 0.3272040486, green: 0.4194450378, blue: 0.8449910283, alpha: 1).withAlphaComponent(0.15)
-                    dealCardsButton.isEnabled = false
-                } else {
-                    dealCardsButton.backgroundColor = #colorLiteral(red: 0.3272040486, green: 0.4194450378, blue: 0.8449910283, alpha: 1)
-                    dealCardsButton.isEnabled = true
-                }
-                updateScoreLabel()
+        for cardView in playgroundView.subviews {  // TODO: set background color in card's draw() (don't know how)
+            cardView.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+        }
+        
+        if dealCardsButtonIsDisabled {
+            dealCardsButton.backgroundColor = #colorLiteral(red: 0.3272040486, green: 0.4194450378, blue: 0.8449910283, alpha: 1).withAlphaComponent(0.15)
+            dealCardsButton.isEnabled = false
+        } else {
+            dealCardsButton.backgroundColor = #colorLiteral(red: 0.3272040486, green: 0.4194450378, blue: 0.8449910283, alpha: 1)
+            dealCardsButton.isEnabled = true
+        }
+        updateScoreLabel()
     }
     
     private var dealCardsButtonIsDisabled: Bool {

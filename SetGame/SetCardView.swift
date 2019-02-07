@@ -49,12 +49,6 @@ class SetCardView: UIView {
         pathForStripes.stroke()
     }
     
-    private func colorCard() {
-        let roundedRect = UIBezierPath(roundedRect: bounds, cornerRadius: cardCornerRadius)
-        #colorLiteral(red: 0.9764705882, green: 0.8392156863, blue: 0.6862745098, alpha: 1).setFill()
-        roundedRect.fill()
-    }
-    
     private func createItems() -> [UIBezierPath] {  // TODO: wrap the repeated code into functions
         var itemPaths = [UIBezierPath]()
         switch numberOfItems {
@@ -156,15 +150,34 @@ class SetCardView: UIView {
         let itemsPaths = createItems()
         colorItemsWith(paths: itemsPaths)
         
-//        if selected {
-//            backgroundColor = #colorLiteral(red: 0, green: 0.5446566343, blue: 0.9828409553, alpha: 1)
-//        }
-//        if successful {
-//            backgroundColor = #colorLiteral(red: 0.1898198426, green: 0.9772902131, blue: 0, alpha: 1)
-//        }
-//        if unsuccessful {
-//            backgroundColor = #colorLiteral(red: 0.846742928, green: 0.1176741496, blue: 0, alpha: 1)
-//        }
+        colorBordersIfNeeded()
+    }
+    
+    private func colorCard() {
+        let roundedRect = UIBezierPath(roundedRect: bounds, cornerRadius: cardCornerRadius)
+        #colorLiteral(red: 0.9764705882, green: 0.8392156863, blue: 0.6862745098, alpha: 1).setFill()
+        roundedRect.fill()
+    }
+    
+    private func colorBordersIfNeeded() {
+        let cardBorder = UIBezierPath(roundedRect: bounds, cornerRadius: cardCornerRadius)
+        cardBorder.lineWidth = 3.2  // TODO: make lineWidthToCardWidth constant
+        
+        if unsuccessful {
+            #colorLiteral(red: 0.846742928, green: 0.1176741496, blue: 0, alpha: 1).setStroke()
+            cardBorder.stroke()
+            return
+        }
+        if successful {
+            #colorLiteral(red: 0.1898198426, green: 0.9772902131, blue: 0, alpha: 1).setStroke()
+            cardBorder.stroke()
+            return
+        }
+        if selected {
+            #colorLiteral(red: 0, green: 0.5446566343, blue: 0.9828409553, alpha: 1).setStroke()
+            cardBorder.stroke()
+            return
+        }
     }
 }
 
@@ -185,7 +198,7 @@ extension CGPoint {
 
 extension SetCardView {
     private struct SizeRatio {
-        static let cardCornerRadiusToCardHeight: CGFloat = 0.03
+        static let cardCornerRadiusToCardHeight: CGFloat = 0.05
         static let itemCornerRadiusToItemWidth: CGFloat = 0.3
         static let itemWidthToCardWidth: CGFloat = 0.7
         static let itemHeightToCardHeight: CGFloat = 0.13

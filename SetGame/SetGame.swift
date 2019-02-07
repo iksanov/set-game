@@ -62,6 +62,65 @@ struct SetGame {
         }
     }
     
+    mutating func cardWasTouched(_ touchedCard: Card) {
+        if selectedCards.count == 3 {
+            if successfulMatch {
+                scoreCounter += 3
+                if !deckOfCards.isEmpty {
+                    replaceSelectedCardsOnTableFromDeck()
+                } else {
+                    removeSelectedCardsFromTable()
+                }
+                let touchedCardIsSelected = selectedCards.contains(touchedCard)
+                deselectAllCards()
+                if !touchedCardIsSelected {
+                    select(card: touchedCard)
+                }
+            } else {
+                scoreCounter -= 5
+                deselectAllCards()
+                select(card: touchedCard)
+            }
+        } else {
+            if selectedCards.contains(touchedCard) {
+                scoreCounter -= 1
+                deselect(card: touchedCard)
+            } else {
+                select(card: touchedCard)
+            }
+        }
+    }
+    
+    private mutating func replaceSelectedCardsOnTableFromDeck() {
+        for card in selectedCards {
+            guard let index = cardsOnTheTable.firstIndex(of: card) else { assert(false) }
+            cardsOnTheTable.remove(at: index)
+            
+            let newCard = deckOfCards.removeLast()
+            cardsOnTheTable.insert(newCard, at: index)
+        }
+    }
+    
+    private mutating func removeSelectedCardsFromTable() {
+        for card in selectedCards {
+            guard let index = cardsOnTheTable.firstIndex(of: card) else { assert(false) }
+            cardsOnTheTable.remove(at: index)
+        }
+    }
+    
+    private mutating func deselectAllCards() {
+        selectedCards.removeAll()
+    }
+    
+    private mutating func select(card: Card) {
+        selectedCards.append(card)
+    }
+    
+    private mutating func deselect(card: Card) {
+        guard let index = selectedCards.firstIndex(of: card) else { assert(false) }
+        selectedCards.remove(at: index)
+    }
+    
     init() {
         buttonIndices = Set(0..<24)
         deckOfCards = [Card]()

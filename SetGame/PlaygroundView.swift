@@ -19,16 +19,17 @@ class PlaygroundView: UIView {
     }
     
     @IBInspectable
-    var numberOfCardsOnTheTable = 12
+    var numberOfCardsOnTheTable = -1
     
     lazy var grid = Grid(layout: .aspectRatio(SizeRatio.cardAspectRatio), frame: bounds)
     
     override func draw(_ rect: CGRect) {
+        print("PLAYGROUNDVIEW_DRAW")
         super.setNeedsDisplay()  // TODO: try to remove this line
         
-        for ind in subviews.indices {  // TODO: set background color in initializer (don't know how)
-            subviews[ind].backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
-        }
+//        for ind in subviews.indices {  // TODO: set background color in card's draw() (don't know how)
+//            subviews[ind].backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+//        }
     }
     
     override func layoutSubviews() {
