@@ -10,6 +10,17 @@ import UIKit
 
 class SetViewController: UIViewController {
     
+    @objc func foo(arg: UITapGestureRecognizer) {
+        if let viewThatWasTapped = arg.view {
+            if let tappedIndex = playgroundView.subviews.firstIndex(of: viewThatWasTapped) {
+                print(tappedIndex)
+            } else {
+                print("error in getting index of view in subviews array")
+            }
+        } else {
+            print("error in accessing the tapped view itsekf")
+        }
+    }
 
     
 //    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -19,13 +30,71 @@ class SetViewController: UIViewController {
 //        updateViewFromModel()
 //    }
     
+    @IBOutlet weak var playgroundView: PlaygroundView! {
+        didSet {
+            print("PLAYGROUNDVIEW_DIDSET")
+            updateViewFromModel()
+        }
+    }
+
     private var game = SetGame()
     
-//    private var dealCardsButtonIsDisabled: Bool {
-//        get {
-//            return game.deckOfCards.isEmpty || (game.buttonIndices.isEmpty && !(game.selectedCards.count == 3 && game.successfulMatch))
-//        }
-//    }
+    private func updateViewFromModel() {
+        playgroundView.numberOfCardsOnTheTable = game.cardsOnTheTable.count
+        
+        // TODO: No need to delete all subviews everytime
+        // it's enough to replace when the number of them didn't changed
+        // even if it did their grid layout can remain the same
+        while !playgroundView.subviews.isEmpty {
+            playgroundView.subviews.first?.removeFromSuperview()
+        }
+        
+        for card in game.cardsOnTheTable {
+            let newCardView = SetCardView()
+            newCardView.color = card.color
+            newCardView.symbol = card.symbol
+            newCardView.shade = card.shade
+            newCardView.numberOfItems = card.numberOfItems
+            
+            if game.selectedCards.contains(card) {
+                newCardView.selected = true
+            }
+            
+            let tap = UITapGestureRecognizer(target: self, action: #selector(foo(arg:)))
+            newCardView.addGestureRecognizer(tap)
+            
+            playgroundView.addSubview(newCardView)
+        }
+        
+        if game.selectedCards.count == 3 {
+            for selectedCard in game.selectedCards {
+                guard let indexOfSelectedCard = game.cardsOnTheTable.firstIndex(of: selectedCard) else { return }
+                guard let viewOfSelectedCard = playgroundView.subviews[indexOfSelectedCard] as? SetCardView else { return }
+                if game.successfulMatch {
+                    viewOfSelectedCard.successful = true
+                } else {
+                    viewOfSelectedCard.successful = false
+                }
+            }
+        }
+        
+        playgroundView.layoutIfNeeded()
+        
+                if dealCardsButtonIsDisabled {
+                    dealCardsButton.backgroundColor = #colorLiteral(red: 0.3272040486, green: 0.4194450378, blue: 0.8449910283, alpha: 1).withAlphaComponent(0.15)
+                    dealCardsButton.isEnabled = false
+                } else {
+                    dealCardsButton.backgroundColor = #colorLiteral(red: 0.3272040486, green: 0.4194450378, blue: 0.8449910283, alpha: 1)
+                    dealCardsButton.isEnabled = true
+                }
+                updateScoreLabel()
+    }
+    
+    private var dealCardsButtonIsDisabled: Bool {
+        get {
+            return game.deckOfCards.isEmpty
+        }
+    }
     
 //    private func cardByButton(_ button: UIButton) -> Card? {
 //        if let cardIndex = cardButtons.firstIndex(of: button) {
@@ -118,11 +187,11 @@ class SetViewController: UIViewController {
     }
     
     private func updateScoreLabel() {
-        let attributesForScoreCountLabel: [NSAttributedString.Key : Any] = [
-            .foregroundColor: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        ]
-        let attributedStringForScoreLabel = NSAttributedString(string: "Score: \(game.scoreCounter)", attributes: attributesForScoreCountLabel)
-        scoreLabel.attributedText = attributedStringForScoreLabel
+//        let attributesForScoreCountLabel: [NSAttributedString.Key : Any] = [
+//            .foregroundColor: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+//        ]
+//        let attributedStringForScoreLabel = NSAttributedString(string: "Score: \(game.scoreCounter)", attributes: attributesForScoreCountLabel)
+//        scoreLabel.attributedText = attributedStringForScoreLabel
     }
     
     @IBOutlet private weak var scoreLabel: UILabel!
@@ -172,7 +241,7 @@ class SetViewController: UIViewController {
 //        case .solid: return 0.0
 //        }
 //    }
-//
+
 //    private func titleForCard(_ card: Card) -> String {
 //        let stringArray = Array(repeating: symbolFromEnum(symbol: card.symbol), count: card.numberOfItems)
 //        return stringArray.joined(separator: "\n")

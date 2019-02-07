@@ -19,49 +19,30 @@ class PlaygroundView: UIView {
     }
     
     @IBInspectable
-    var numberOfCardsOnTheTable = 1
+    var numberOfCardsOnTheTable = 12
     
     lazy var grid = Grid(layout: .aspectRatio(SizeRatio.cardAspectRatio), frame: bounds)
     
     override func draw(_ rect: CGRect) {
-        // TODO: try to remove this line
-        super.setNeedsDisplay()
-        let path = UIBezierPath()
-        path.addArc(withCenter: CGPoint(x: bounds.midX, y: bounds.midY), radius: 50, startAngle: CGFloat.pi, endAngle: 1/2*CGFloat.pi, clockwise: true)
-        path.stroke()
+        super.setNeedsDisplay()  // TODO: try to remove this line
         
-        // TODO: set background color in initializer
-        // (don't know how)
-        for ind in subviews.indices {
+        for ind in subviews.indices {  // TODO: set background color in initializer (don't know how)
             subviews[ind].backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
         }
     }
     
-    @objc func foo(arg: UITapGestureRecognizer) {
-        print(arg.view!)
-    }
-    
     override func layoutSubviews() {
-        super.layoutSubviews()
-        // TODO: No need to delete all subviews everytime
-        // it's enough to replace when the number of them didn't changed
-        // even if it did their grid layout can remain the same
-        while !subviews.isEmpty {
-            subviews.first?.removeFromSuperview()
-        }
+        super.layoutSubviews()  // TODO: try to remove this line
+        print("PLAYGROUND_LAYOUTSUBVIEWS")
         
         grid.frame = bounds
         grid.cellCount = numberOfCardsOnTheTable
         
         for i in 0..<numberOfCardsOnTheTable {
             if let newCardFrame = grid[i] {
-                let newCard = SetCardView()
+                let cardView = subviews[i]
                 let shortenFrame = newCardFrame.zoom(by: SizeRatio.cardWithInsetZoomedBy)
-                newCard.frame = shortenFrame
-                let tap = UITapGestureRecognizer(target: self, action: #selector(foo(arg:)))
-                newCard.addGestureRecognizer(tap)
-                
-                addSubview(newCard)
+                cardView.frame = shortenFrame
             }
         }
     }

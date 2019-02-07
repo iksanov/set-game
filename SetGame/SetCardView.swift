@@ -11,10 +11,13 @@ import UIKit
 @IBDesignable
 class SetCardView: UIView {
     
-    var color: ColorOfCard = ColorOfCard.red
+    var color: ColorOfCard = ColorOfCard.red  // TODO: add initializer
     var symbol: SymbolOfCard = SymbolOfCard.squiggle
     var shade: ShadeOfCard = ShadeOfCard.open
     var numberOfItems: Int = 3
+    var selected = false
+    var successful = false
+    var unsuccessful = false
     
     private func colorFromEnum(color: ColorOfCard) -> UIColor {
         switch color {
@@ -145,12 +148,23 @@ class SetCardView: UIView {
     }
     
     override func draw(_ rect: CGRect) {
+        print("SETCARDVIEW_DRAW")
         super.setNeedsDisplay() // TODO: try to remove this line
         
         colorCard()
         
         let itemsPaths = createItems()
         colorItemsWith(paths: itemsPaths)
+        
+//        if selected {
+//            backgroundColor = #colorLiteral(red: 0, green: 0.5446566343, blue: 0.9828409553, alpha: 1)
+//        }
+//        if successful {
+//            backgroundColor = #colorLiteral(red: 0.1898198426, green: 0.9772902131, blue: 0, alpha: 1)
+//        }
+//        if unsuccessful {
+//            backgroundColor = #colorLiteral(red: 0.846742928, green: 0.1176741496, blue: 0, alpha: 1)
+//        }
     }
 }
 

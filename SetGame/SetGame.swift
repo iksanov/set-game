@@ -8,13 +8,6 @@
 
 import Foundation
 
-extension Array {
-    func getFirstThree() -> (Element, Element, Element) {
-        let firstThreeSubrange = self.prefix(upTo: 3)
-        return (firstThreeSubrange[0], firstThreeSubrange[1], firstThreeSubrange[2])
-    }
-}
-
 struct SetGame {
     var buttonIndices: Set<Int>
     var deckOfCards: [Card]
@@ -95,4 +88,10 @@ struct SetGame {
     }
 }
 
+extension Array {
+    func getFirstThree() -> (Element, Element, Element) {
+        let firstThreeSubrange = self.prefix(upTo: 3)
+        return (firstThreeSubrange[0], firstThreeSubrange[1], firstThreeSubrange[2])
+    }
+}
 
