@@ -9,28 +9,12 @@
 import UIKit
 
 class PlaygroundView: UIView {
-    
-    // TODO: try to remove this function call
-    // it can be removed if "Content mode" in storyboard is set to "Redraw"
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        setNeedsDisplay()
-        setNeedsLayout()
-    }
-    
     var numberOfCardsOnTheTable = -1
     
     lazy var grid = Grid(layout: .aspectRatio(SizeRatio.cardAspectRatio), frame: bounds)
     
-    override func draw(_ rect: CGRect) {
-        super.setNeedsDisplay()  // TODO: try to remove this line
-        
-//        for ind in subviews.indices {  // TODO: set background color in card's draw() (don't know how)
-//            subviews[ind].backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
-//        }
-    }
-    
     override func layoutSubviews() {
-        super.layoutSubviews()  // TODO: try to remove this line
+        super.layoutSubviews()
         
         grid.frame = bounds
         grid.cellCount = numberOfCardsOnTheTable

@@ -8,15 +8,7 @@
 
 import UIKit
 
-class SetViewController: UIViewController {
-    
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {  // TODO: remove this block
-//        everything works without the following line
-//        super.traitCollectionDidChange(previousTraitCollection)
-        view.layoutIfNeeded()  // TODO: try to remove
-        updateViewFromModel()
-    }
-    
+class SetViewController: UIViewController {    
     @IBOutlet weak var playgroundView: PlaygroundView! {
         didSet {
             let rotate = UIRotationGestureRecognizer(target: self, action: #selector(shuffleCards(recognizer:)))
@@ -37,37 +29,27 @@ class SetViewController: UIViewController {
     }
     
     @objc private func touchCardBy(recognizer: UITapGestureRecognizer) {
-        print(recognizer.numberOfTouches)
         switch recognizer.state {
         case .ended:
-            print("ENDED")
             guard let tappedView = recognizer.view else { assert(false) }
-            guard let indexOftouchedCard = playgroundView.subviews.firstIndex(of: tappedView) else { return }
+            guard let indexOftouchedCard = playgroundView.subviews.firstIndex(of: tappedView) else { return }  // TODO: crash if assert(false) instead of return
             let touchedCard = game.cardsOnTheTable[indexOftouchedCard]
             game.cardWasTouched(touchedCard)
             updateViewFromModel()
-        case .changed:
-            print("CHANGED")
-        default: break
+        default:
+            break
         }
     }
     
     private func updateViewFromModel() {
         playgroundView.numberOfCardsOnTheTable = game.cardsOnTheTable.count
         
-        // TODO: No need to delete all subviews everytime
-        // it's enough to replace when the number of them didn't changed
-        // even if it did their grid layout can remain the same
         while !playgroundView.subviews.isEmpty {
             playgroundView.subviews.first?.removeFromSuperview()
         }
         
         for card in game.cardsOnTheTable {
-            let newCardView = SetCardView()
-            newCardView.color = card.color
-            newCardView.symbol = card.symbol
-            newCardView.shade = card.shade
-            newCardView.numberOfItems = card.numberOfItems
+            let newCardView = SetCardView(color: card.color, symbol: card.symbol, shade: card.shade, numberOfItems: card.numberOfItems)
             
             if game.selectedCards.contains(card) {
                 newCardView.selected = true
@@ -91,11 +73,7 @@ class SetViewController: UIViewController {
             }
         }
         
-        playgroundView.layoutIfNeeded()  // TODO: try to remove
-        
-        for cardView in playgroundView.subviews {  // TODO: set background color in card's draw() (don't know how)
-            cardView.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
-        }
+        playgroundView.layoutIfNeeded()
         
         if dealCardsButtonIsDisabled {
             dealCardsButton.backgroundColor = #colorLiteral(red: 0.3272040486, green: 0.4194450378, blue: 0.8449910283, alpha: 1).withAlphaComponent(0.15)

@@ -57,8 +57,7 @@ struct SetGame {
             let cond4 = ifColorsEqualIn(card1, card2, card3) || ifColorsAllDifferentIn(card1, card2, card3)
             return cond1 && cond2 && cond3 && cond4
         } else {
-            assert(false)  // we can check successful match only for 3 selected cards
-            print("The number of selected cards is != 3")
+            assert(false, "The number of selected cards is != 3")
         }
     }
     

@@ -9,20 +9,31 @@
 import UIKit
 
 class SetCardView: UIView {
+    init(color: ColorOfCard, symbol: SymbolOfCard, shade: ShadeOfCard, numberOfItems: Int, selected: Bool = false, successful: Bool = false, unsuccessful: Bool = false) {
+        self.color = color
+        self.symbol = symbol
+        self.shade = shade
+        self.numberOfItems = numberOfItems
+        self.selected = selected
+        self.successful = successful
+        self.unsuccessful = unsuccessful
+        
+        super.init(frame: CGRect.init())
+        
+        self.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+    }
     
-    var color: ColorOfCard = ColorOfCard.red  // TODO: add initializer
-    var symbol: SymbolOfCard = SymbolOfCard.squiggle
-    var shade: ShadeOfCard = ShadeOfCard.open
-    var numberOfItems: Int = 3
-    var selected = false {
-        didSet { setNeedsDisplay() }  // TODO: try to remove line
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-    var successful = false {
-        didSet { setNeedsDisplay() }  // TODO: try to remove line
-    }
-    var unsuccessful = false {
-        didSet { setNeedsDisplay() }  // TODO: try to remove line
-    }
+    
+    var color: ColorOfCard
+    var symbol: SymbolOfCard
+    var shade: ShadeOfCard
+    var numberOfItems: Int
+    var selected: Bool
+    var successful: Bool
+    var unsuccessful: Bool
     
     private func colorFromEnum(color: ColorOfCard) -> UIColor {
         switch color {
@@ -54,32 +65,29 @@ class SetCardView: UIView {
         pathForStripes.stroke()
     }
     
-    private func createItems() -> [UIBezierPath] {  // TODO: wrap the repeated code into functions
+    private func itemPathWithYCoord(_ YCoord: CGFloat) -> UIBezierPath {
+        let rectForItem = CGRect.withCenterAndSize(center: CGPoint(x: bounds.center.x, y: YCoord), size: itemSize)
+        let itemPath = itemInRect(rectForItem)
+        return itemPath
+    }
+    
+    private func createItems() -> [UIBezierPath] {
         var itemPaths = [UIBezierPath]()
         switch numberOfItems {
         case 1:
-            let rectForItem = CGRect.withCenterAndSize(center: bounds.center, size: itemSize)
-            let itemPath = itemInRect(rectForItem)
+            let itemPath = itemPathWithYCoord(bounds.center.y)
             itemPaths.append(itemPath)
             return itemPaths
         case 2:
-            let rectForItem_upper = CGRect.withCenterAndSize(center: CGPoint(x: bounds.center.x, y: upperOfTwoItemYCoord), size: itemSize)
-            let rectForItem_lower = CGRect.withCenterAndSize(center: CGPoint(x: bounds.center.x, y: LowerOfTwoItemYCoord), size: itemSize)
-            let itemPath_upper = itemInRect(rectForItem_upper)
-            let itemPath_lower = itemInRect(rectForItem_lower)
-            itemPaths.append(itemPath_upper)
-            itemPaths.append(itemPath_lower)
+            let itemPath_upper = itemPathWithYCoord(upperOfTwoItemYCoord)
+            let itemPath_lower = itemPathWithYCoord(lowerOfTwoItemYCoord)
+            itemPaths.append(contentsOf: [itemPath_upper, itemPath_lower])
             return itemPaths
         case 3:
-            let rectForItem_upper = CGRect.withCenterAndSize(center: CGPoint(x: bounds.center.x, y: upperOfTwoItemYCoord), size: itemSize)
-            let rectForItem_mid = CGRect.withCenterAndSize(center: bounds.center, size: itemSize)
-            let rectForItem_lower = CGRect.withCenterAndSize(center: CGPoint(x: bounds.center.x, y: LowerOfTwoItemYCoord), size: itemSize)
-            let itemPath_upper = itemInRect(rectForItem_upper)
-            let itemPath_mid = itemInRect(rectForItem_mid)
-            let itemPath_lower = itemInRect(rectForItem_lower)
-            itemPaths.append(itemPath_upper)
-            itemPaths.append(itemPath_mid)
-            itemPaths.append(itemPath_lower)
+            let itemPath_upper = itemPathWithYCoord(upperOfThreeItemYCoord)
+            let itemPath_mid = itemPathWithYCoord(bounds.center.y)
+            let itemPath_lower = itemPathWithYCoord(LowerOfThreeItemYCoord)
+            itemPaths.append(contentsOf: [itemPath_upper, itemPath_mid, itemPath_lower])
             return itemPaths
         default:
             assert(false, "inappropriate number of items on card")
@@ -147,8 +155,6 @@ class SetCardView: UIView {
     }
     
     override func draw(_ rect: CGRect) {
-        super.setNeedsDisplay() // TODO: try to remove this line
-        
         colorCard()
         
         let itemsPaths = createItems()
@@ -165,7 +171,7 @@ class SetCardView: UIView {
     
     private func colorBordersIfNeeded() {
         let cardBorder = UIBezierPath(roundedRect: bounds, cornerRadius: cardCornerRadius)
-        cardBorder.lineWidth = 3.2  // TODO: make lineWidthToCardWidth constant
+        cardBorder.lineWidth = SizeRatio.cardBorderWidth
         
         if unsuccessful {
             #colorLiteral(red: 0.846742928, green: 0.1176741496, blue: 0, alpha: 1).setStroke()
@@ -209,6 +215,7 @@ extension SetCardView {
         static let strideWidthToItemWidth: CGFloat = 0.05
         static let upperOfTwoItemYCoordToCardHeight: CGFloat = 0.3
         static let upperOfThreeItemYCoordToCardHeight: CGFloat = 0.2
+        static let cardBorderWidth: CGFloat = 3.2
     }
     private struct ColorConstants {
         static let alphaForStripes: CGFloat = 0.5
@@ -234,7 +241,7 @@ extension SetCardView {
     private var upperOfTwoItemYCoord: CGFloat {
         return bounds.size.height * SizeRatio.upperOfTwoItemYCoordToCardHeight + bounds.origin.y
     }
-    private var LowerOfTwoItemYCoord: CGFloat {
+    private var lowerOfTwoItemYCoord: CGFloat {
         return bounds.size.height * (1 - SizeRatio.upperOfTwoItemYCoordToCardHeight) + bounds.origin.y
     }
     private var upperOfThreeItemYCoord: CGFloat {
