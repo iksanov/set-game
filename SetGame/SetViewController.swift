@@ -72,9 +72,7 @@ class SetViewController: UIViewController {
                 }
             }
         }
-        
-        playgroundView.layoutIfNeeded()
-        
+                
         if dealCardsButtonIsDisabled {
             dealCardsButton.backgroundColor = #colorLiteral(red: 0.3272040486, green: 0.4194450378, blue: 0.8449910283, alpha: 1).withAlphaComponent(0.15)
             dealCardsButton.isEnabled = false
